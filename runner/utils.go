@@ -52,6 +52,20 @@ func toContainerConfig(n *parser.DockerNode) *dockerclient.ContainerConfig {
 		config.HostConfig.Binds = append(config.HostConfig.Binds, path)
 	}
 
+	for _, path := range n.Devices {
+		if strings.Index(path, ":") == -1 {
+			// Invalid config will just silently fail...
+			continue
+		}
+		parts := strings.Split(path, ":")
+		deviceMapping := dockerclient.DeviceMapping{
+			PathOnHost:        parts[0],
+			PathInContainer:   parts[1],
+			CgroupPermissions: "rwm",
+		}
+		config.HostConfig.Devices = append(config.HostConfig.Devices, deviceMapping)
+	}
+
 	return config
 }
 
