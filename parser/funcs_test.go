@@ -453,6 +453,7 @@ func Test_Funcs(t *testing.T) {
 				node = &DockerNode{}
 				node.Privileged = false
 				node.Volumes = []string{`some stuff`}
+				node.Devices = []string{`some:device`}
 				node.Net = `someNet`
 				node.Entrypoint = []string{`super entrypoint`}
 			})
@@ -472,6 +473,7 @@ func Test_Funcs(t *testing.T) {
 							Escalate(node)
 							g.Assert(node.Privileged).Equal(true)
 							g.Assert(node.Volumes).Equal([]string(nil))
+							g.Assert(node.Devices).Equal([]string(nil))
 							g.Assert(node.Net).Equal(``)
 							g.Assert(node.Entrypoint).Equal([]string{})
 						})
@@ -490,6 +492,7 @@ func Test_Funcs(t *testing.T) {
 							Escalate(node)
 							g.Assert(node.Privileged).Equal(true)
 							g.Assert(node.Volumes).Equal([]string(nil))
+							g.Assert(node.Devices).Equal([]string(nil))
 							g.Assert(node.Net).Equal(``)
 							g.Assert(node.Entrypoint).Equal([]string{})
 						})
@@ -508,6 +511,7 @@ func Test_Funcs(t *testing.T) {
 							Escalate(node)
 							g.Assert(node.Privileged).Equal(true)
 							g.Assert(node.Volumes).Equal([]string(nil))
+							g.Assert(node.Devices).Equal([]string(nil))
 							g.Assert(node.Net).Equal(``)
 							g.Assert(node.Entrypoint).Equal([]string{})
 						})
@@ -528,6 +532,7 @@ func Test_Funcs(t *testing.T) {
 						Escalate(node)
 						g.Assert(node.Privileged).Equal(false)
 						g.Assert(node.Volumes).Equal([]string{`some stuff`})
+						g.Assert(node.Devices).Equal([]string{`some:device`})
 						g.Assert(node.Net).Equal(`someNet`)
 						g.Assert(node.Entrypoint).Equal([]string{`super entrypoint`})
 					})

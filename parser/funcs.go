@@ -150,9 +150,9 @@ func Escalate(n Node) error {
 
 		d.Privileged = true
 		d.Volumes = nil
+		d.Devices = nil
 		d.Net = ""
 		d.Entrypoint = []string{}
-		//d.Volumes = []string{"/lib/modules:/lib/modules"}
 	}
 	return nil
 }
