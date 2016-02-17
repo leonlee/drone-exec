@@ -412,6 +412,7 @@ func Test_Funcs(t *testing.T) {
 				node = &DockerNode{}
 				node.Privileged = true
 				node.Volumes = []string{`some stuff`}
+				node.Devices = []string{`some devices`}
 				node.Net = `someNet`
 				node.Entrypoint = []string{`super entrypoint`}
 			})
@@ -420,6 +421,7 @@ func Test_Funcs(t *testing.T) {
 				Sanitize(node)
 				g.Assert(node.Privileged).Equal(false)
 				g.Assert(node.Volumes).Equal([]string(nil))
+				g.Assert(node.Devices).Equal([]string(nil))
 				g.Assert(node.Net).Equal(``)
 				g.Assert(node.Entrypoint).Equal([]string{})
 			})
