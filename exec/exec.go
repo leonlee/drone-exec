@@ -83,18 +83,13 @@ func Exec(payload Payload, opt Options, outw, errw io.Writer) error {
 			verified = false
 		}
 
-		switch {
-		case verified && payload.Build.Event == plugin.EventPull:
-			log.Debugln("Injected secrets into Yaml safely")
-			var err error
-			payload.Yaml, err = inject.InjectSafe(payload.Yaml, sec.Environment.Map())
-			if err != nil {
-				return fmt.Errorf("injecting yaml secrets: %s", err)
-			}
-		case verified:
+		if verified {
+			// if verified we know that the checksum protects secrets when injected
+			// into the compose section of the .drone.yml and we trust that the user
+			// has taken precautions for pull_request events.
 			log.Debugln("Injected secrets into Yaml")
 			payload.Yaml = inject.Inject(payload.Yaml, sec.Environment.Map())
-		case !verified:
+		} else {
 			// if we can't validate the Yaml file we don't inject
 			// secrets, and therefore shouldn't bother running the
 			// deploy and notify tests.
