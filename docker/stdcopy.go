@@ -98,7 +98,6 @@ func StdCopy(dstout, dsterr io.Writer, src io.Reader) (written int64, err error)
 			nr += nr2
 			if er == io.EOF {
 				if nr < stdWriterPrefixLen {
-					logrus.Debugf("Corrupted prefix: %v", buf[:nr])
 					return written, nil
 				}
 				break
