@@ -126,6 +126,7 @@ func Sanitize(n Node) error {
 	d.Devices = nil
 	d.Net = ""
 	d.Entrypoint = []string{}
+	d.DNS = []string{}
 	return nil
 }
 

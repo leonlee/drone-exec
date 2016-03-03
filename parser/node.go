@@ -61,6 +61,7 @@ type DockerNode struct {
 	Devices        []string
 	ExtraHosts     []string
 	Net            string
+	DNS            []string
 	AuthConfig     yaml.AuthConfig
 	Memory         int64
 	CPUSetCPUs     string
@@ -81,6 +82,7 @@ func newDockerNode(typ NodeType, c yaml.Container) *DockerNode {
 		Devices:        c.Devices,
 		ExtraHosts:     c.ExtraHosts,
 		Net:            c.Net,
+		DNS:            c.DNS.Slice(),
 		AuthConfig:     c.AuthConfig,
 		Memory:         c.Memory,
 		CPUSetCPUs:     c.CPUSetCPUs,

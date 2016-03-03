@@ -42,6 +42,10 @@ func toContainerConfig(n *parser.DockerNode) *dockerclient.ContainerConfig {
 		config.Entrypoint = nil
 	}
 
+	if len(n.DNS) != 0 {
+		config.HostConfig.Dns = n.DNS
+	}
+
 	config.Volumes = map[string]struct{}{}
 	for _, path := range n.Volumes {
 		if strings.Index(path, ":") == -1 {

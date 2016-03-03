@@ -26,6 +26,7 @@ type Container struct {
 	Volumes        []string
 	Devices        []string
 	Net            string
+	DNS            Stringorslice
 	AuthConfig     AuthConfig `yaml:"auth_config"`
 	Memory         int64      `yaml:"mem_limit"`
 	CPUSetCPUs     string     `yaml:"cpuset"`
