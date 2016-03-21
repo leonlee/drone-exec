@@ -81,6 +81,7 @@ func TestParse(t *testing.T) {
 			s := conf.Deploy.Slice()
 			g.Assert(s[0].Image).Equal("heroku")
 			g.Assert(s[1].Image).Equal("heroku")
+			g.Assert(s[2].Image).Equal("docker")
 		})
 
 		g.It("Should maintain plugin ordering", func() {
@@ -176,6 +177,9 @@ deploy:
       branch: somebranch
       matrix:
         go_version: 1.5
+  docker:
+    repo: foo/bar
+    tag: latest
 `
 
 var multiBuild = `
