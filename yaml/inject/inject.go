@@ -1,7 +1,9 @@
 package inject
 
 import (
+	"fmt"
 	"sort"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -49,7 +51,24 @@ func InjectSafe(raw string, params map[string]string) (string, error) {
 	if err != nil {
 		return raw, err
 	}
-	after.Build = before.Build
+
+	// bind the build section in the yaml
+	for i, v := range after {
+		key := fmt.Sprintf("%v", v.Key)
+		key = strings.ToLower(key)
+		if key == "build" {
+
+			// and replace with the build section pre-injection
+			for _, vv := range before {
+				key = fmt.Sprintf("%v", vv.Key)
+				key = strings.ToLower(key)
+				if key == "build" {
+					after[i] = vv
+				}
+			}
+			break
+		}
+	}
 	result, err := yaml.Marshal(after)
 	return string(result), err
 }
@@ -57,13 +76,8 @@ func InjectSafe(raw string, params map[string]string) (string, error) {
 // parse unmarshals the yaml file into an intermediate representation
 // that isolates the build section. This allows us to modify the rest
 // of the Yaml file while preserving the build section.
-func parse(raw string) (*config, error) {
-	conf := &config{}
-	err := yaml.Unmarshal([]byte(raw), &conf)
-	return conf, err
-}
-
-type config struct {
-	Build map[string]interface{} `yaml:"build"`
-	Vargs map[string]interface{} `yaml:"vargs,inline"`
+func parse(raw string) (yaml.MapSlice, error) {
+	dat := yaml.MapSlice{}
+	err := yaml.Unmarshal([]byte(raw), &dat)
+	return dat, err
 }
