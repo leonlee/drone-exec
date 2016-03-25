@@ -20,6 +20,14 @@ const (
 	DefaultMatch  = "plugins/*"           // Default plugin whitelist.
 )
 
+var (
+	escaltedPlugins = map[string]bool{
+		"plugins/drone-docker": true,
+		"plugins/drone-gcr":    true,
+		"plugins/drone-ecr":    true,
+	}
+)
+
 // RuleFunc defines a function used to validate or modify the yaml during
 // the parsing process.
 type RuleFunc func(Node) error
@@ -146,9 +154,9 @@ func Escalate(n Node) error {
 	if !ok {
 		return nil
 	}
-	image := strings.Split(d.Image, ":")
-	if d.NodeType == NodePublish && (image[0] == "plugins/drone-docker" || image[0] == "plugins/drone-gcr" || image[0] == "plugins/drone-ecr") {
+	imageParts := strings.Split(d.Image, ":")
 
+	if d.NodeType == NodePublish && isEscalated(imageParts[0]) {
 		d.Privileged = true
 		d.Volumes = nil
 		d.Devices = nil
@@ -296,4 +304,16 @@ func expandImageTag(image string) string {
 		return image + ":latest"
 	}
 	return image
+}
+
+//isEscalated to check if plugin has escalated
+func isEscalated(imageName string) bool {
+	if escaltedPlugins[imageName] {
+		return true
+	}
+
+	if value := os.Getenv("ESCALATE_FILTER"); len(value) > 0 {
+		return strings.Contains(value, imageName)
+	}
+	return false
 }
