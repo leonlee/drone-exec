@@ -1,6 +1,10 @@
 package docker
 
-import "github.com/samalba/dockerclient"
+import (
+	"os"
+
+	"github.com/samalba/dockerclient"
+)
 
 // Client is a wrapper around the default Docker client
 // that tracks all created containers ensures some default
@@ -19,7 +23,10 @@ func NewClient(docker dockerclient.Client) (*Client, error) {
 	}
 	conf.Entrypoint = []string{"/bin/sleep"}
 	conf.Cmd = []string{"86400"}
-	conf.Image = "gliderlabs/alpine:3.1"
+	conf.Image = os.Getenv("AMBASSADOR_URI")
+	if len(conf.Image) == 0 {
+		conf.Image = "gliderlabs/alpine:3.1"
+	}
 	conf.Volumes = map[string]struct{}{}
 	conf.Volumes["/drone"] = struct{}{}
 	info, err := Start(docker, conf, nil, false)
